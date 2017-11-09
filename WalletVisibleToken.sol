@@ -11,6 +11,9 @@ contract WalletVisibleToken {
     }
 
     function transfer(address _to, uint256 _value) {
+        if (balanceOf[msg.sender] < _value) revert();
+        if (balanceOf[_to] + _value < balanceOf[_to]) revert();
+
         balanceOf[msg.sender] -= _value;                    // Subtract from the sender
         balanceOf[_to] += _value;                           // Add the same to the recipient
         Transfer(msg.sender,_to,_value);

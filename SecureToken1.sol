@@ -3,7 +3,9 @@ pragma solidity ^0.4.16;
 contract SecureToken {
     mapping (address => uint256) public balanceOf;
 
-    function UnsecureToken(uint256 initialSupply) {
+    event Transfer(address _from, address _to, uint _value);
+
+    function SecureToken(uint256 initialSupply) {
         balanceOf[msg.sender] = initialSupply;
     }
 
@@ -13,6 +15,8 @@ contract SecureToken {
 
         if (balanceOf[msg.sender] < _value) revert();
         balanceOf[msg.sender] -= _value;
+
+        Transfer(msg.sender, _to,  _value);
     }
 }
 
