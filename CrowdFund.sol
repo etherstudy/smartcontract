@@ -12,10 +12,10 @@ contract CrowdFund {
     uint public price;
     token public tokenReward;
     mapping(address => uint256) public balanceOf;
-    bool fundingGoalReached = false;
-    bool crowdsaleClosed = false;
+    bool public fundingGoalReached = false;
+    bool public crowdsaleClosed = false;
 
-    event GoalReached(address beneficiary, uint amountRaised);
+    event GoalReached(address beneficiaryAddress, uint amountRaisedValue);
     event FundTransfer(address backer, uint amount, bool isContribution);
 
     function CrowdFund(
