@@ -1,7 +1,7 @@
 pragma solidity ^0.4.16;
 
 interface token {
-    function transfer(address receiver, uint amount);
+    function transfer(address receiver, uint amount) public;
 }
 
 contract CrowdFund {
@@ -24,7 +24,7 @@ contract CrowdFund {
         uint durationInMinutes,
         uint etherCostOfEachToken,
         address addressOfTokenUsedAsReward
-    ) {
+    ) public {
         beneficiary = ifSuccessfulSendTo;
         fundingGoal = fundingGoalInEthers * 1 ether;
         deadline = now + durationInMinutes * 1 minutes;
@@ -32,9 +32,9 @@ contract CrowdFund {
         tokenReward = token(addressOfTokenUsedAsReward);
     }
 
-   
 
-    function () payable {
+
+    function () payable external {
         require(!crowdsaleClosed);
         uint amount = msg.value;
         balanceOf[msg.sender] += amount;
@@ -45,7 +45,7 @@ contract CrowdFund {
 
     modifier afterDeadline() { if (now >= deadline) _; }
 
-    function checkGoalReached() afterDeadline {
+    function checkGoalReached() external afterDeadline {
         if (amountRaised >= fundingGoal){
             fundingGoalReached = true;
             GoalReached(beneficiary, amountRaised);
@@ -53,7 +53,7 @@ contract CrowdFund {
         crowdsaleClosed = true;
     }
 
-    function safeWithdrawal() afterDeadline {
+    function safeWithdrawal() external afterDeadline {
         if (!fundingGoalReached) {
             uint amount = balanceOf[msg.sender];
             balanceOf[msg.sender] = 0;
@@ -74,4 +74,3 @@ contract CrowdFund {
         }
     }
 }
-
