@@ -1,0 +1,292 @@
+<html>
+	<body>
+		<H1>Greeter</H1>
+		<table border="1">
+			<tr>
+				<th>요구사항</th>
+				<th>Learning object</th>
+				<th>스마트 컨트랙</th>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+“Hello” 라는 문자열을 반환하는 sayHello 를 가진 컨트랙을 만든다.
+
+Contract 이름 : Greeting
+함수 이름 : function sayHello() returns (string)
+					</pre>
+				</td>
+				<td>
+					<pre>
+pragma,
+contract,
+function
+- visibility : public
+- mutuality : pure
+					</pre>
+				</td>
+				<td> <a href="GreeterV1.sol"> Greeter V1 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+sayHello 에서 출력할 문자열을 변경하는 함수 changeHello 를 추가한다.
+sayHello 는 changeHello 의 패러미터 값을 출력해야 한다.
+
+Contract 이름 : Greeting
+추가할 함수 : function changeHello(string message) 
+					</pre>
+				</td>
+				<td>
+					<pre>
+state variable
+function visibility
+- view
+- (non-payable)
+					</pre>
+				</td>
+				<td> <a href="GreeterV2.sol"> Greeter V2 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+sayHello 에서 국가를 패러미터로 입력 받아서 Korea 인 경우 “안녕" 을 출력한다.
+
+Contract 이름 : GlobalGreeting
+변경할 함수 : funtion sayHello(string country) returns (string)
+
+Contract 추가항목
+상태 변수(state variable) : mapping (string => string) countryToHello;
+생성자 
+					</pre>
+				</td>
+				<td>
+					<pre>
+mapping
+					</pre>
+				</td>
+				<td> <a href="GreeterV3.sol"> Greeter V3 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+여러 나라의 인사 메시지를 추가/삭제할 수 있는 함수들을 추가한다.
+
+추가할 함수
+function changeHello(string country,string message) external 
+function deleteHello(string country) external
+					</pre>
+				</td>
+				<td>
+					<pre>
+delete
+					</pre>
+				</td>
+				<td> <a href="GreeterV4.sol"> Greeter V4 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+GlobalGreeting 에 헤어질 때 사용할 수 있는 인사를 추가한다.
+
+함수 : sayGoodbye(string country) external returns (string)
+					</pre>
+				</td>
+				<td>
+					<pre>
+이전 학습 내용 반복
+					</pre>
+				</td>
+				<td> <a href="GreeterV5.sol"> Greeter V5 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+struct Greeting {
+	string hello;
+	string goodbye;
+}
+
+이 구조체를 이용하도록 sayHello, sayGoodbye, changeHello, changeGoodbye 함수를 수정한다.
+					</pre>
+				</td>
+				<td>
+					<pre>
+struct
+- struct 객체 생성
+- data location
+					</pre>
+				</td>
+				<td> <a href="GreeterV6.sol"> Greeter V6 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+컨트랙트 제거하기
+					</pre>
+				</td>
+				<td>
+					<pre>
+self-destruct
+msg.sender
+					</pre>
+				</td>
+				<td> <a href="GreeterV7.sol"> Greeter V7 </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+인사말을 제공해야 하는 국가가 몇 개로 한정 되어 있다고 하고 변경될 가능성이 적다고 해 보자.
+이런 경우에는 국가를 문자열이 아니라 enum 으로 모델링하는 것이 좋다.
+
+enum Country { Global, Korea, Usa }
+
+Mapping 의 키를 enum 으로 바꿔보자.
+					</pre>
+				</td>
+				<td>
+					<pre>
+enum
+enum - uint 변환
+					</pre>
+				</td>
+				<td> <a href="GreeterV8.sol"> Greeter V8 </a> </td>
+			</tr>
+		</table>
+
+		<H1>Token</H1>
+		<table border="1">
+			<tr>
+				<td>
+					<pre>
+서로 주고 받을 수 있는 토큰 컨트랙을 만들어 보자.
+- 계정 별로 토큰 잔고를 관리할 수 있어야 한다.
+- 계정 간에 토큰을 주고 받을 수 이어야 한다.
+					</pre>
+				</td>
+				<td>
+					<pre>
+transfer 함수 구현
+					</pre>
+				</td>
+				<td> <a href="MinimumViableToken.sol"> MinimumViableToken </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+토큰 생성과 동시에 Mist 화면에 표시되는 토큰을 만들어 보자.
+
+컨트랙에 Transfer Event 추가
+					</pre>
+				</td>
+				<td>
+					<pre>
+event 정의
+event 사용
+					</pre>
+				</td>
+				<td> <a href="WalletVisibleToken.sol"> WalletVisibleToken </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+토큰 컨트랙을 생성한 후에 수동으로 토큰 정보를 수정하는 수고를 덜어보자.
+					</pre>
+				</td>
+				<td>
+					<pre>
+name, symbol decimals 정의 
+					</pre>
+				</td>
+				<td> <a href="UnsecureGeneralWalletCompatibleToken.sol"> UnsecureGeneralWalletCompatibleToken </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+토큰을 전송하는 함수(transfer)에서 조건을 검사해서
+			<tr>
+				<td>
+					<pre>
+토큰을 전송하는 함수(transfer)에서 조건을 검사해서
+송신자가 자신이 가진 토큰보다 더 많은 토큰을 전송할 수 없게 하자
+토큰 수신자가 보유한 토큰에 Overflow 가 발생하지 않도록 하자.
+					</pre>
+				</td>
+				<td>
+					<pre>
+if 문
+					</pre>
+				</td>
+				<td>
+					<a href="UnsecureGeneralWalletCompatibleToken2.sol"> UnsecureGeneralWalletCompatibleToken2 </a> </br>
+					<a href="UnsecureGeneralWalletCompatibleToken3.sol"> UnsecureGeneralWalletCompatibleToken3 </a> </br>
+					<a href="UnsecureToken1.sol"> UnsecureToken1 </a> </br>
+					<a href="UnsecureToken2.sol"> UnsecureToken2 </a> </br>
+					<a href="UnsecureToken3.sol"> UnsecureToken3 </a> 
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+if 문 만을 사용하면 트랜잭션이 실패한 경우 변경된 상태가 그대로 남게 된다.
+조건이 맞지 않을 때, 트랜잭션을 중지해서 변경된 상태를 모두 이전으로 돌리자.
+					</pre>
+				</td>
+				<td>
+					<pre>
+revert
+					</pre>
+				</td>
+				<td> <a href="SecureGeneralWalletCompatibleToken.sol"> SecureGeneralWalletCompatibleToken </a> </td>
+			</tr>
+			<tr>
+				<td>
+					<pre>
+if 와 revert 를 사용하면 코드가 장황해진다.
+require 로 코드를 간결하게 만들어 보자.
+					</pre>
+				</td>
+				<td>
+					<pre>
+require
+					</pre>
+				</td>
+				<td> <a href="SecureGeneralWalletCompatibleToken2.sol"> SecureGeneralWalletCompatibleToken2 </a> </td>
+			</tr>
+		</table>
+
+		<H1> CrowdFund </H1>
+		<table border="1">
+			<tr>
+				<td>
+					<pre>
+CrowdFund 와 토큰 컨트랙간의 인터랙션 이해하기
+					</pre>
+				</td>
+				<td>
+					<pre>
+Transaction 과 Message 구분하기
+					</pre>
+				</td>
+				<td> <a href="CrowdFund.sol"> CrowdFund </a> </td>
+			</tr>
+		</table>
+
+		<H1> DAO Hacking - Reentrant Problem</H1>
+		<table border="1">
+			<tr>
+				<td>
+					<pre>
+Unsecure Token 해킹하기
+					</pre>
+				</td>
+				<td>
+					<pre>
+account.call 의 동작 원리
+					</pre>
+				</td>
+				<td> <a href="DaoHack.sol"> DaoHack </a> </td>
+			</tr>
+		</table>
+	</body>
+</html>
