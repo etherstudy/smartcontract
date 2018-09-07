@@ -4,19 +4,38 @@ var BigNumber = web3.BigNumber;
 
 var assert = require('assert');
 var should = require('chai')
+    .use(require('chai-as-promised'))
     .use(require('chai-bignumber')(BigNumber))
     .should();
 
+const TestHelper = require('./helpers');
+
 contract("ERC20", (accounts) => {
     describe("transfer", async function() {
-        it("should transfer to recipient by the specified amount", async function() {
-            const creator = accounts[2];
-            let erc20 = await ERC20.new('ERC20','ERC20',1000,1000, {from: creator} );
+        let creator;
+        let erc20;
+        let initialSupply = 1000;
 
+        beforeEach(async function() {
+            creator = accounts[2];
+
+            erc20 = await ERC20.new('ERC20', 'ERC20', initialSupply, 1000, {from: creator});
+        });
+
+        it("should be reverted when transfer more than balance", async function() {
+            const recipient = accounts[1];
+            const moreThanBalance = initialSupply + 1;
+
+            let transactionPromise = erc20.transfer(recipient, moreThanBalance, {from: creator});
+            await TestHelper.expectThrow(transactionPromise);
+        })
+
+
+        it("should transfer to recipient by the specified amount", async function() {
             const recipient = accounts[1];
             const oneHundredTokens = 100;
 
-            await erc20.transfer(recipient, oneHundredTokens);
+            await erc20.transfer(recipient, oneHundredTokens, {from: creator});
 
             const recipientBalance = await erc20.balanceOf(recipient);
 
